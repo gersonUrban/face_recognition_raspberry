@@ -6,11 +6,17 @@ import imutils
 import pickle
 import time
 import cv2
+import numpy as np
 
+#doing with json instead pickle
+#import json
 # load the known faces and embeddings along with OpenCV's
 # Haar cascade for face detection
 
+
 data = pickle.loads(open("encodings.pkl", "rb").read())
+#with open('encodings.json') as json_file:
+#    data = json.load(json_file)
 detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 # initialize video stream
@@ -40,18 +46,36 @@ while(True):
     
     # loop over the facial embeddings
     for encoding in encodings:
+        #print(encoding)
         #attempt to match each face in the input image to out known encodings
-        matches = face_recognition.copare_faces("encodings.pkl",encoding)
+        #matches = face_recognition.compare_faces("encodings.pkl",encoding)
+        #matches = face_recognition.compare_faces(data,encoding)
+        #min_a = 10
+        #min_n = ''
+        matches = []
+        for i, vec in enumerate(data['encodings']):
+            a = np.linalg.norm(vec - encoding)
+            #if a < min_a:
+            #    min_a = a
+            #    min_n = data['names'][i]
+            if a <= 0.5:
+                matches.append(True)
+            else:
+                matches.append(False)
+            
+            
+        #matches = face_recognition.compare_faces("encodings.json",encoding)
+        #matches = [False]
         name = "Unknown"
         
         if True in matches:
             
             matched_ids = [i for (i,b) in enumerate(matches) if b]
-            count = {}
+            counts = {}
             
             # loop over the matched indexes and maintain a count for
             # each recognized face
-            for i in matche_ids:
+            for i in matched_ids:
                 name = data['names'][i]
                 counts[name] = counts.get(name,0)+1
                 

@@ -39,7 +39,16 @@ for i, image_path in enumerate(image_paths):
 # dump the facil encodings + names to disk
 print("[INFO] serializing encodings...")
 data = {"encodings":known_encodings, "names":known_names}
-f = open("encodings.pkl", "wb")
-f.write(pickle.dumps(data))
-f.close()
+print(data)
+#doing with json
+#import json
+#with open('encodings.json','w') as outfile:
+#    json.dump(data, outfile)
+    
+#print(data['encodings'][0])
+# pickle have problem to read, than do it with json
+pickle.dump(data, open( "encodings.pkl", "wb" ))
+#f = open("encodings.pkl", "wb")
+#f.write(pickle.dumps(data))
+#f.close()
         
